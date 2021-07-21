@@ -7,6 +7,6 @@ class RemoteAuthentication {
   RemoteAuthentication(this.httpClient, this.url);
 
   Future<void> auth() async {
-    return await this.httpClient.request(this.url);
+    return await this.httpClient.request(this.url, 'POST');
   }
 }
