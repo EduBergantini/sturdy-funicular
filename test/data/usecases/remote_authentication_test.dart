@@ -26,9 +26,10 @@ void main() {
 
   test('Should call CustomHttpClient with correct values', () async {
     when(() => httpClient.request(any<String>(), any<String>(),
-        body: any(named: 'body'))).thenAnswer((invocation) => Future.value());
+            body: any(named: 'body')))
+        .thenAnswer((_) => Future<Map?>.value({'accessToken': 'any_value'}));
 
-    await sut.auth(model);
+    await sut.authenticate(model);
 
     verify(() => httpClient.request(url, 'POST',
         body: {'email': model.email, 'password': model.password}));
@@ -39,7 +40,7 @@ void main() {
     when(() => httpClient.request(any<String>(), any<String>(),
         body: any(named: 'body'))).thenThrow(HttpError.badRequest);
 
-    final future = sut.auth(model);
+    final future = sut.authenticate(model);
 
     expect(future, throwsA(DomainError.invalidModel));
   });
@@ -49,7 +50,7 @@ void main() {
     when(() => httpClient.request(any<String>(), any<String>(),
         body: any(named: 'body'))).thenThrow(HttpError.unauthorized);
 
-    final future = sut.auth(model);
+    final future = sut.authenticate(model);
 
     expect(future, throwsA(DomainError.invalidCredentials));
   });
@@ -59,7 +60,7 @@ void main() {
     when(() => httpClient.request(any<String>(), any<String>(),
         body: any(named: 'body'))).thenThrow(HttpError.notFound);
 
-    final future = sut.auth(model);
+    final future = sut.authenticate(model);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -69,8 +70,20 @@ void main() {
     when(() => httpClient.request(any<String>(), any<String>(),
         body: any(named: 'body'))).thenThrow(HttpError.serverError);
 
-    final future = sut.auth(model);
+    final future = sut.authenticate(model);
 
     expect(future, throwsA(DomainError.unexpected));
+  });
+
+  test('Should an AccountEntity when CustomHttpClient returns 200', () async {
+    final fakeAccessToken = faker.guid.guid();
+
+    when(() => httpClient.request(any<String>(), any<String>(),
+            body: any(named: 'body')))
+        .thenAnswer((_) async => {'accessToken': fakeAccessToken});
+
+    final account = await sut.authenticate(model);
+
+    expect(account?.token, fakeAccessToken);
   });
 }
