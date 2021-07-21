@@ -1,3 +1,5 @@
+import 'package:moovbr/domain/helpers/domain_error.dart';
+
 import '../../domain/usecases/usecases.dart';
 
 import '../http/http.dart';
@@ -11,9 +13,18 @@ class RemoteAuthentication {
   Future<void> auth(AuthenticationModel model) async {
     final remoteAuthModel = RemoteAuthenticationModel.fromDomain(model);
 
-    return await this
-        .httpClient
-        .request(this.url, 'POST', body: remoteAuthModel.toJson());
+    try {
+      await this
+          .httpClient
+          .request(this.url, 'POST', body: remoteAuthModel.toJson());
+    } on HttpError catch (e) {
+      switch (e) {
+        case HttpError.badRequest:
+          throw DomainError.invalidModel;
+        default:
+          throw DomainError.unexpected;
+      }
+    }
   }
 }
 
