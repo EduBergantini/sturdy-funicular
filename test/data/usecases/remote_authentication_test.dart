@@ -31,4 +31,16 @@ void main() {
     verify(() => httpClient.request(url, 'POST',
         body: {'email': model.email, 'password': model.password}));
   });
+
+  test('Should throw InvalidModelError when CustomHttpClient returns 400',
+      () async {
+    when(() => httpClient.request(any<String>(), any<String>(),
+        body: any(named: 'body'))).thenThrow(HttpError.badRequest);
+
+    final model =
+        AuthenticationModel(faker.internet.email(), faker.internet.password());
+    final future = sut.auth(model);
+
+    expect(future, throwsA(DomainError.invalidModel));
+  });
 }
