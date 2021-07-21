@@ -1,6 +1,6 @@
-import 'package:moovbr/domain/usecases/authentication.dart';
+import '../../domain/usecases/usecases.dart';
 
-import '../http/custom_http_client.dart';
+import '../http/http.dart';
 
 class RemoteAuthentication {
   final CustomHttpClient httpClient;
@@ -9,7 +9,8 @@ class RemoteAuthentication {
   RemoteAuthentication(this.httpClient, this.url);
 
   Future<void> auth(AuthenticationModel model) async {
-    final body = {'email': model.email, 'password': model.password};
-    return await this.httpClient.request(this.url, 'POST', body: body);
+    return await this
+        .httpClient
+        .request(this.url, 'POST', body: model.toJson());
   }
 }

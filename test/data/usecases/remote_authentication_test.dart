@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:moovbr/domain/usecases/authentication.dart';
 import 'package:test/test.dart';
 
-import 'package:moovbr/data/http/custom_http_client.dart';
+import 'package:moovbr/data/http/http.dart';
 import 'package:moovbr/data/usecases/remote_authentication.dart';
 
 import 'remote_authentication_test.mocks.dart';
