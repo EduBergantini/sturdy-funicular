@@ -13,19 +13,21 @@ void main() {
   CustomHttpClient httpClient = MockCustomHttpClient();
   String url = faker.internet.httpUrl();
   RemoteAuthentication sut = RemoteAuthentication(httpClient, url);
+  AuthenticationModel model =
+      AuthenticationModel(faker.internet.email(), faker.internet.password());
 
   setUp(() {
     httpClient = MockCustomHttpClient();
     url = faker.internet.httpUrl();
     sut = RemoteAuthentication(httpClient, url);
+    model =
+        AuthenticationModel(faker.internet.email(), faker.internet.password());
   });
 
   test('Should call CustomHttpClient with correct values', () async {
     when(() => httpClient.request(any<String>(), any<String>(),
         body: any(named: 'body'))).thenAnswer((invocation) => Future.value());
 
-    final model =
-        AuthenticationModel(faker.internet.email(), faker.internet.password());
     await sut.auth(model);
 
     verify(() => httpClient.request(url, 'POST',
@@ -37,8 +39,6 @@ void main() {
     when(() => httpClient.request(any<String>(), any<String>(),
         body: any(named: 'body'))).thenThrow(HttpError.badRequest);
 
-    final model =
-        AuthenticationModel(faker.internet.email(), faker.internet.password());
     final future = sut.auth(model);
 
     expect(future, throwsA(DomainError.invalidModel));
