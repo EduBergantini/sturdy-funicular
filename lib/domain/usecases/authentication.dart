@@ -9,7 +9,4 @@ class AuthenticationModel {
   final String password;
 
   AuthenticationModel(this.email, this.password);
-
-  Map<String, dynamic> toJson() =>
-      {'email': this.email, 'password': this.password};
 }
