@@ -21,6 +21,8 @@ class RemoteAuthentication {
       switch (e) {
         case HttpError.badRequest:
           throw DomainError.invalidModel;
+        case HttpError.unauthorized:
+          throw DomainError.invalidCredentials;
         default:
           throw DomainError.unexpected;
       }
