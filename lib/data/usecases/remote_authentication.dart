@@ -21,7 +21,6 @@ class RemoteAuthentication implements Authentication {
           .httpClient
           .request(this.url, 'POST', body: remoteAuthModel.toJson());
 
-      //TODO: testar resposta nula
       if (response == null) {
         throw HttpError.invalidResponseData;
       }
