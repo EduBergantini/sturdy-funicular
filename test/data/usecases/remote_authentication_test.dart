@@ -10,13 +10,13 @@ import 'remote_authentication_test.mocks.dart';
 
 @GenerateMocks([CustomHttpClient])
 void main() {
-  test('Should call CustomHttpClient with correct url', () async {
+  test('Should call CustomHttpClient with correct values', () async {
     final httpClient = MockCustomHttpClient();
     final url = faker.internet.httpUrl();
     final sut = RemoteAuthentication(httpClient, url);
 
     await sut.auth();
 
-    verify(httpClient.request(url));
+    verify(httpClient.request(url, 'POST'));
   });
 }
