@@ -43,4 +43,14 @@ void main() {
 
     expect(future, throwsA(DomainError.invalidModel));
   });
+
+  test('Should throw UnexpectedError when CustomHttpClient returns 404',
+      () async {
+    when(() => httpClient.request(any<String>(), any<String>(),
+        body: any(named: 'body'))).thenThrow(HttpError.notFound);
+
+    final future = sut.auth(model);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }
