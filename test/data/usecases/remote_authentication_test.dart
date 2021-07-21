@@ -44,6 +44,16 @@ void main() {
     expect(future, throwsA(DomainError.invalidModel));
   });
 
+  test('Should throw InvalidCredentialsError when CustomHttpClient returns 401',
+      () async {
+    when(() => httpClient.request(any<String>(), any<String>(),
+        body: any(named: 'body'))).thenThrow(HttpError.unauthorized);
+
+    final future = sut.auth(model);
+
+    expect(future, throwsA(DomainError.invalidCredentials));
+  });
+
   test('Should throw UnexpectedError when CustomHttpClient returns 404',
       () async {
     when(() => httpClient.request(any<String>(), any<String>(),
