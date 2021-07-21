@@ -1,15 +1,14 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:moovbr/domain/usecases/authentication.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+import 'package:moovbr/domain/helpers/helpers.dart';
+import 'package:moovbr/domain/usecases/authentication.dart';
 import 'package:moovbr/data/http/http.dart';
 import 'package:moovbr/data/usecases/remote_authentication.dart';
 
-import 'remote_authentication_test.mocks.dart';
+class MockCustomHttpClient extends Mock implements CustomHttpClient {}
 
-@GenerateMocks([CustomHttpClient])
 void main() {
   CustomHttpClient httpClient = MockCustomHttpClient();
   String url = faker.internet.httpUrl();
@@ -22,11 +21,14 @@ void main() {
   });
 
   test('Should call CustomHttpClient with correct values', () async {
+    when(() => httpClient.request(any<String>(), any<String>(),
+        body: any(named: 'body'))).thenAnswer((invocation) => Future.value());
+
     final model =
         AuthenticationModel(faker.internet.email(), faker.internet.password());
     await sut.auth(model);
 
-    verify(httpClient.request(url, 'POST',
+    verify(() => httpClient.request(url, 'POST',
         body: {'email': model.email, 'password': model.password}));
   });
 }
