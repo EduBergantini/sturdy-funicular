@@ -98,4 +98,14 @@ void main() {
 
     expect(future, throwsA(DomainError.unexpected));
   });
+
+  test('Should throw UnexpectedError when CustomHttpClient returns null',
+      () async {
+    when(() => httpClient.request(any<String>(), any<String>(),
+        body: any(named: 'body'))).thenAnswer((_) async => null);
+
+    final future = sut.authenticate(model);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }
