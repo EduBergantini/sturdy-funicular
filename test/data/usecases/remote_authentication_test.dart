@@ -1,6 +1,7 @@
 import 'package:faker/faker.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:moovbr/domain/usecases/authentication.dart';
 import 'package:test/test.dart';
 
 import 'package:moovbr/data/http/custom_http_client.dart';
@@ -21,8 +22,11 @@ void main() {
   });
 
   test('Should call CustomHttpClient with correct values', () async {
-    await sut.auth();
+    final model =
+        AuthenticationModel(faker.internet.email(), faker.internet.password());
+    await sut.auth(model);
 
-    verify(httpClient.request(url, 'POST'));
+    verify(httpClient.request(url, 'POST',
+        body: {'email': model.email, 'password': model.password}));
   });
 }
