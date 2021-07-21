@@ -1,22 +1,30 @@
-import 'package:moovbr/domain/helpers/domain_error.dart';
-
+import '../../domain/entities/entities.dart';
+import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 
 import '../http/http.dart';
 
-class RemoteAuthentication {
+class RemoteAuthentication implements Authentication {
   final CustomHttpClient httpClient;
   final String url;
 
   RemoteAuthentication(this.httpClient, this.url);
 
-  Future<void> auth(AuthenticationModel model) async {
+  @override
+  Future<AccountEntity?> authenticate(AuthenticationModel model) async {
     final remoteAuthModel = RemoteAuthenticationModel.fromDomain(model);
 
     try {
-      await this
+      final response = await this
           .httpClient
           .request(this.url, 'POST', body: remoteAuthModel.toJson());
+
+      //TODO: testar resposta nula
+      if (response == null) {
+        throw HttpError.invalidResponseData;
+      }
+
+      return AccountEntity(response['accessToken']);
     } on HttpError catch (e) {
       switch (e) {
         case HttpError.badRequest:
