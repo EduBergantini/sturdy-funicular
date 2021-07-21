@@ -1,3 +1,5 @@
+import 'package:moovbr/data/models/remote_account_model.dart';
+
 import '../../domain/entities/entities.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
@@ -24,7 +26,7 @@ class RemoteAuthentication implements Authentication {
         throw HttpError.invalidResponseData;
       }
 
-      return AccountEntity(response['accessToken']);
+      return RemoteAccountModel.fromJson(response).toDomain();
     } on HttpError catch (e) {
       switch (e) {
         case HttpError.badRequest:
