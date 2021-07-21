@@ -1,12 +1,17 @@
-import 'package:moovbr/domain/entities/account_entity.dart';
+import '../http/http.dart';
+import '../../domain/entities/entities.dart';
 
 class RemoteAccountModel {
   final String accessToken;
 
   RemoteAccountModel(this.accessToken);
 
-  factory RemoteAccountModel.fromJson(Map json) =>
-      RemoteAccountModel(json['accessToken']);
+  factory RemoteAccountModel.fromJson(Map json) {
+    if (!json.containsKey('accessToken')) {
+      throw HttpError.invalidResponseData;
+    }
+    return RemoteAccountModel(json['accessToken']);
+  }
 
   AccountEntity toDomain() => AccountEntity(this.accessToken);
 }
