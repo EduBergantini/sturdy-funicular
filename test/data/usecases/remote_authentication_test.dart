@@ -84,7 +84,7 @@ void main() {
 
     final account = await sut.authenticate(model);
 
-    expect(account?.token, fakeAccessToken);
+    expect(account.token, fakeAccessToken);
   });
 
   test(

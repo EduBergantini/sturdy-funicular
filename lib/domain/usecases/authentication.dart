@@ -1,7 +1,7 @@
 import '../entities/entities.dart';
 
 abstract class Authentication {
-  Future<AccountEntity?> authenticate(AuthenticationModel authenticationModel);
+  Future<AccountEntity> authenticate(AuthenticationModel authenticationModel);
 }
 
 class AuthenticationModel {

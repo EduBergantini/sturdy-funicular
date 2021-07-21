@@ -13,7 +13,7 @@ class RemoteAuthentication implements Authentication {
   RemoteAuthentication(this.httpClient, this.url);
 
   @override
-  Future<AccountEntity?> authenticate(AuthenticationModel model) async {
+  Future<AccountEntity> authenticate(AuthenticationModel model) async {
     final remoteAuthModel = RemoteAuthenticationModel.fromDomain(model);
 
     try {
