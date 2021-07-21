@@ -1,7 +1,12 @@
-import 'package:meta/meta.dart';
-
 import '../entities/entities.dart';
 
 abstract class Authentication {
-  Future<AccountEntity?> authenticate({@required String email, @required String password});
+  Future<AccountEntity?> authenticate(AuthenticationModel authenticationModel);
+}
+
+class AuthenticationModel {
+  final String email;
+  final String password;
+
+  AuthenticationModel(this.email, this.password);
 }
