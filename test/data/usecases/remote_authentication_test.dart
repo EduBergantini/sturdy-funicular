@@ -16,6 +16,17 @@ void main() {
   AuthenticationModel model =
       AuthenticationModel(faker.internet.email(), faker.internet.password());
 
+  When _mockRequest() => when(() => httpClient
+      .request(any<String>(), any<String>(), body: any(named: 'body')));
+
+  void _mockHttpSuccess(Map<String, dynamic>? data) {
+    _mockRequest().thenAnswer((_) => Future<Map?>.value(data));
+  }
+
+  void _mockHttpError(HttpError error) {
+    _mockRequest().thenThrow(error);
+  }
+
   setUp(() {
     httpClient = MockCustomHttpClient();
     url = faker.internet.httpUrl();
@@ -25,9 +36,7 @@ void main() {
   });
 
   test('Should call CustomHttpClient with correct values', () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-            body: any(named: 'body')))
-        .thenAnswer((_) => Future<Map?>.value({'accessToken': 'any_value'}));
+    _mockHttpSuccess({'accessToken': 'any_value'});
 
     await sut.authenticate(model);
 
@@ -37,8 +46,7 @@ void main() {
 
   test('Should throw InvalidModelError when CustomHttpClient returns 400',
       () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-        body: any(named: 'body'))).thenThrow(HttpError.badRequest);
+    _mockHttpError(HttpError.badRequest);
 
     final future = sut.authenticate(model);
 
@@ -47,8 +55,7 @@ void main() {
 
   test('Should throw InvalidCredentialsError when CustomHttpClient returns 401',
       () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-        body: any(named: 'body'))).thenThrow(HttpError.unauthorized);
+    _mockHttpError(HttpError.unauthorized);
 
     final future = sut.authenticate(model);
 
@@ -57,8 +64,7 @@ void main() {
 
   test('Should throw UnexpectedError when CustomHttpClient returns 404',
       () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-        body: any(named: 'body'))).thenThrow(HttpError.notFound);
+    _mockHttpError(HttpError.notFound);
 
     final future = sut.authenticate(model);
 
@@ -67,8 +73,7 @@ void main() {
 
   test('Should throw UnexpectedError when CustomHttpClient returns 500',
       () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-        body: any(named: 'body'))).thenThrow(HttpError.serverError);
+    _mockHttpError(HttpError.serverError);
 
     final future = sut.authenticate(model);
 
@@ -78,9 +83,7 @@ void main() {
   test('Should an AccountEntity when CustomHttpClient returns 200', () async {
     final fakeAccessToken = faker.guid.guid();
 
-    when(() => httpClient.request(any<String>(), any<String>(),
-            body: any(named: 'body')))
-        .thenAnswer((_) async => {'accessToken': fakeAccessToken});
+    _mockHttpSuccess({'accessToken': fakeAccessToken});
 
     final account = await sut.authenticate(model);
 
@@ -90,9 +93,7 @@ void main() {
   test(
       'Should throw UnexpectedError when CustomHttpClient returns 200 with invalid data',
       () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-            body: any(named: 'body')))
-        .thenAnswer((_) async => {'invalid_key': 'value'});
+    _mockHttpSuccess({'invalid_key': 'value'});
 
     final future = sut.authenticate(model);
 
@@ -101,8 +102,7 @@ void main() {
 
   test('Should throw UnexpectedError when CustomHttpClient returns null',
       () async {
-    when(() => httpClient.request(any<String>(), any<String>(),
-        body: any(named: 'body'))).thenAnswer((_) async => null);
+    _mockHttpSuccess(null);
 
     final future = sut.authenticate(model);
 
