@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:faker/faker.dart';
 import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
@@ -25,16 +27,21 @@ void main() {
 
   group('POST', () {
     test('Should call post with correct values', () async {
-      when(() => httpClient.post(any<Uri>(), headers: any(named: 'headers')))
+      when(() => httpClient.post(any<Uri>(),
+              headers: any(named: 'headers'), body: any(named: 'body')))
           .thenAnswer((invocation) async => Response("", 200));
 
-      await sut.request(url, 'POST');
+      final fakeBody = {'any_key': 'any_value'};
 
-      verify(() => httpClient.post(Uri.parse(url), headers: {
+      await sut.request(url, 'POST', body: fakeBody);
+
+      verify(() => httpClient.post(Uri.parse(url),
+          headers: {
             'User-Agent': 'MoovBR.Mobile/1.0.0',
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-          }));
+          },
+          body: jsonEncode(fakeBody)));
     });
   });
 }
