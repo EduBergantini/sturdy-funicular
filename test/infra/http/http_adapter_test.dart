@@ -19,12 +19,16 @@ void main() {
       final url = faker.internet.httpUrl();
       final sut = HttpAdapter(httpClient);
 
-      when(() => httpClient.post(any<Uri>()))
+      when(() => httpClient.post(any<Uri>(), headers: any(named: 'headers')))
           .thenAnswer((invocation) async => Response("", 200));
 
       await sut.request(url, 'POST');
 
-      verify(() => httpClient.post(Uri.parse(url)));
+      verify(() => httpClient.post(Uri.parse(url), headers: {
+            'User-Agent': 'MoovBR.Mobile/1.0.0',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }));
     });
   });
 }
