@@ -43,5 +43,19 @@ void main() {
           },
           body: jsonEncode(fakeBody)));
     });
+
+    test('Should call post without body', () async {
+      when(() => httpClient.post(any<Uri>(),
+              headers: any(named: 'headers'), body: any(named: 'body')))
+          .thenAnswer((invocation) async => Response("", 200));
+
+      await sut.request(url, 'POST');
+
+      verify(() => httpClient.post(Uri.parse(url), headers: {
+            'User-Agent': 'MoovBR.Mobile/1.0.0',
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }));
+    });
   });
 }
