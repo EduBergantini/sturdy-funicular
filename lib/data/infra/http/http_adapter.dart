@@ -14,9 +14,8 @@ class HttpAdapter {
 
   Future<void> request(String url, String method,
       {Map<String, dynamic>? body}) async {
-    await this
-        .httpClient
-        .post(Uri.parse(url), headers: customHeaders, body: jsonEncode(body));
+    await this.httpClient.post(Uri.parse(url),
+        headers: customHeaders, body: body != null ? jsonEncode(body) : null);
     return;
   }
 }
