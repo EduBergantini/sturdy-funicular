@@ -13,12 +13,18 @@ void main() {
     registerFallbackValue(url);
   });
 
+  HttpClientMock httpClient = HttpClientMock();
+  String url = faker.internet.httpUrl();
+  HttpAdapter sut = HttpAdapter(httpClient);
+
+  setUp(() {
+    httpClient = HttpClientMock();
+    url = faker.internet.httpUrl();
+    sut = HttpAdapter(httpClient);
+  });
+
   group('POST', () {
     test('Should call post with correct values', () async {
-      final httpClient = HttpClientMock();
-      final url = faker.internet.httpUrl();
-      final sut = HttpAdapter(httpClient);
-
       when(() => httpClient.post(any<Uri>(), headers: any(named: 'headers')))
           .thenAnswer((invocation) async => Response("", 200));
 
