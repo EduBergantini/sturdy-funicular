@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:moovbr/data/http/custom_http_client.dart';
+
+import '../../http/http.dart';
 
 class HttpAdapter implements CustomHttpClient {
   final Client httpClient;
@@ -17,9 +18,11 @@ class HttpAdapter implements CustomHttpClient {
       {Map<String, dynamic>? body}) async {
     final response = await this.httpClient.post(Uri.parse(url),
         headers: customHeaders, body: body != null ? jsonEncode(body) : null);
+    return _handleHttpResponse(response);
+  }
 
+  Map? _handleHttpResponse(Response response) {
     if (response.body.isEmpty || response.statusCode == 204) return null;
-
     return jsonDecode(response.body);
   }
 }
