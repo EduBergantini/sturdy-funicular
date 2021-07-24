@@ -18,6 +18,7 @@ void main() {
   HttpClientMock httpClient = HttpClientMock();
   String url = faker.internet.httpUrl();
   HttpAdapter sut = HttpAdapter(httpClient);
+  final String httpResponseBody = '{"any_key": "any_value"}';
 
   setUp(() {
     httpClient = HttpClientMock();
@@ -29,7 +30,7 @@ void main() {
     test('Should call post with correct values', () async {
       when(() => httpClient.post(any<Uri>(),
               headers: any(named: 'headers'), body: any(named: 'body')))
-          .thenAnswer((invocation) async => Response("", 200));
+          .thenAnswer((invocation) async => Response(httpResponseBody, 200));
 
       final fakeBody = {'any_key': 'any_value'};
 
@@ -47,7 +48,7 @@ void main() {
     test('Should call post without body', () async {
       when(() => httpClient.post(any<Uri>(),
               headers: any(named: 'headers'), body: any(named: 'body')))
-          .thenAnswer((invocation) async => Response("", 200));
+          .thenAnswer((invocation) async => Response(httpResponseBody, 200));
 
       await sut.request(url, 'POST');
 
@@ -57,5 +58,15 @@ void main() {
             'Accept': 'application/json'
           }));
     });
+  });
+
+  test('Should return data when post return 200', () async {
+    when(() => httpClient.post(any<Uri>(),
+            headers: any(named: 'headers'), body: any(named: 'body')))
+        .thenAnswer((invocation) async => Response(httpResponseBody, 200));
+
+    final result = await sut.request(url, 'POST');
+
+    expect(result, {'any_key': 'any_value'});
   });
 }
