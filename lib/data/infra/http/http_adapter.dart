@@ -32,6 +32,8 @@ class HttpAdapter implements CustomHttpClient {
         throw HttpError.badRequest;
       case 401:
         throw HttpError.unauthorized;
+      case 403:
+        throw HttpError.forbidden;
       case 500:
       default:
         throw HttpError.serverError;
