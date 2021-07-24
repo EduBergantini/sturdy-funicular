@@ -119,6 +119,14 @@ void main() {
       expect(future, throwsA(HttpError.unauthorized));
     });
 
+    test('Should throw ForbiddenError when post return 403', () async {
+      _mockHttpResult(403);
+
+      final future = sut.request(url, 'POST');
+
+      expect(future, throwsA(HttpError.forbidden));
+    });
+
     test('Should throw ServerError when post return 500', () async {
       _mockHttpResult(500);
 
