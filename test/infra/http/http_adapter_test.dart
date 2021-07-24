@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:faker/faker.dart';
 import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:moovbr/data/http/http.dart';
 import 'package:test/test.dart';
 
 import 'package:moovbr/data/infra/http/http_adapter.dart';
@@ -91,6 +92,14 @@ void main() {
       final result = await sut.request(url, 'POST');
 
       expect(result, null);
+    });
+
+    test('Should return BadRequestError when post return 400', () async {
+      _mockHttpSuccess('', 400);
+
+      final future = sut.request(url, 'POST');
+
+      expect(future, throwsA(HttpError.badRequest));
     });
   });
 }
