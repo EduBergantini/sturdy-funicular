@@ -84,5 +84,13 @@ void main() {
 
       expect(result, null);
     });
+
+    test('Should return null when post return 204 with data', () async {
+      _mockHttpSuccess(httpResponseBody, 204);
+
+      final result = await sut.request(url, 'POST');
+
+      expect(result, null);
+    });
   });
 }
