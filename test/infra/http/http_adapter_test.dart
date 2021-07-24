@@ -94,6 +94,15 @@ void main() {
       expect(result, null);
     });
 
+    test('Should throw BadRequestError when post return 400 with data',
+        () async {
+      _mockHttpResult(400, responseBody: httpResponseBody);
+
+      final future = sut.request(url, 'POST');
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
     test('Should throw BadRequestError when post return 400', () async {
       _mockHttpResult(400);
 
@@ -102,13 +111,12 @@ void main() {
       expect(future, throwsA(HttpError.badRequest));
     });
 
-    test('Should throw BadRequestError when post return 400 with data',
-        () async {
-      _mockHttpResult(400, responseBody: httpResponseBody);
+    test('Should throw ServerError when post return 500', () async {
+      _mockHttpResult(500);
 
       final future = sut.request(url, 'POST');
 
-      expect(future, throwsA(HttpError.badRequest));
+      expect(future, throwsA(HttpError.serverError));
     });
   });
 }
