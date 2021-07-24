@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:moovbr/data/http/custom_http_client.dart';
 
-class HttpAdapter {
+class HttpAdapter implements CustomHttpClient {
   final Client httpClient;
   final Map<String, String> customHeaders = {
     'User-Agent': 'MoovBR.Mobile/1.0.0',
@@ -12,10 +13,11 @@ class HttpAdapter {
 
   HttpAdapter(this.httpClient);
 
-  Future<void> request(String url, String method,
+  Future<Map?> request(String url, String method,
       {Map<String, dynamic>? body}) async {
-    await this.httpClient.post(Uri.parse(url),
+    final response = await this.httpClient.post(Uri.parse(url),
         headers: customHeaders, body: body != null ? jsonEncode(body) : null);
-    return;
+
+    return jsonDecode(response.body);
   }
 }
