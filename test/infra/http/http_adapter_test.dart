@@ -151,5 +151,13 @@ void main() {
 
       expect(future, throwsA(HttpError.serverError));
     });
+
+    test('Should throw InternalHttpError when post throws', () async {
+      _mockRequest().thenThrow(Exception());
+
+      final future = sut.request(url, 'POST');
+
+      expect(future, throwsA(HttpError.internalHttpError));
+    });
   });
 }
