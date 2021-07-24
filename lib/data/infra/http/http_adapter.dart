@@ -16,15 +16,24 @@ class HttpAdapter implements CustomHttpClient {
 
   Future<Map?> request(String url, String method,
       {Map<String, dynamic>? body}) async {
-    final Response response;
-    switch (method) {
-      case 'POST':
-        response = await this.httpClient.post(Uri.parse(url),
-            headers: customHeaders,
-            body: body != null ? jsonEncode(body) : null);
-        break;
-      default:
-        throw HttpError.invalidRequestMethod;
+    Response response = Response('', 500);
+
+    if (!['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS'].contains(method)) {
+      throw HttpError.invalidRequestMethod;
+    }
+
+    try {
+      switch (method) {
+        case 'POST':
+          response = await this.httpClient.post(Uri.parse(url),
+              headers: customHeaders,
+              body: body != null ? jsonEncode(body) : null);
+          break;
+        default:
+          throw HttpError.invalidRequestMethod;
+      }
+    } catch (e) {
+      throw HttpError.internalHttpError;
     }
 
     return _handleHttpResponse(response);

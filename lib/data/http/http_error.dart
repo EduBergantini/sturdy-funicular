@@ -1,5 +1,6 @@
 enum HttpError {
   invalidRequestMethod,
+  internalHttpError,
 
   badRequest,
   unauthorized,
