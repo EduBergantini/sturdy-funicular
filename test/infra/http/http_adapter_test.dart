@@ -69,4 +69,14 @@ void main() {
 
     expect(result, {'any_key': 'any_value'});
   });
+
+  test('Should return null when post return 200 with no data', () async {
+    when(() => httpClient.post(any<Uri>(),
+            headers: any(named: 'headers'), body: any(named: 'body')))
+        .thenAnswer((invocation) async => Response('', 200));
+
+    final result = await sut.request(url, 'POST');
+
+    expect(result, null);
+  });
 }
