@@ -30,6 +30,7 @@ class HttpAdapter implements CustomHttpClient {
         return null;
       case 400:
         throw HttpError.badRequest;
+      case 500:
       default:
         throw HttpError.serverError;
     }
