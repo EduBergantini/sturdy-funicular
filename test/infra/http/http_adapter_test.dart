@@ -27,6 +27,15 @@ void main() {
     sut = HttpAdapter(httpClient);
   });
 
+  group('GENERICS', () {
+    test('Should throw InvalidMethodError when invalid method is provided',
+        () async {
+      final fakeBody = {'any_key': 'any_value'};
+      final future = sut.request(url, 'INVALID_METHOD', body: fakeBody);
+      expect(future, throwsA(HttpError.invalidRequestMethod));
+    });
+  });
+
   group('POST', () {
     When _mockRequest() => when(() => httpClient.post(any<Uri>(),
         headers: any(named: 'headers'), body: any(named: 'body')));
