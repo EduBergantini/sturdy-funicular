@@ -22,7 +22,16 @@ class HttpAdapter implements CustomHttpClient {
   }
 
   Map? _handleHttpResponse(Response response) {
-    if (response.body.isEmpty || response.statusCode == 204) return null;
-    return jsonDecode(response.body);
+    switch (response.statusCode) {
+      case 200:
+        if (response.body.isEmpty) return null;
+        return jsonDecode(response.body);
+      case 204:
+        return null;
+      case 400:
+        throw HttpError.badRequest;
+      default:
+        throw HttpError.serverError;
+    }
   }
 }
