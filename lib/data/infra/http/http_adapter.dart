@@ -18,6 +18,8 @@ class HttpAdapter implements CustomHttpClient {
     final response = await this.httpClient.post(Uri.parse(url),
         headers: customHeaders, body: body != null ? jsonEncode(body) : null);
 
+    if (response.body.isEmpty) return null;
+
     return jsonDecode(response.body);
   }
 }
