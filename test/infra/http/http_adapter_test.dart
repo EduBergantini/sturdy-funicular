@@ -31,13 +31,13 @@ void main() {
     When _mockRequest() => when(() => httpClient.post(any<Uri>(),
         headers: any(named: 'headers'), body: any(named: 'body')));
 
-    void _mockHttpSuccess(String responseBody, int statusCode) {
+    void _mockHttpSuccess(int statusCode, {String responseBody = ''}) {
       _mockRequest().thenAnswer(
           (invocation) => Future.value(Response(responseBody, statusCode)));
     }
 
     setUp(() {
-      _mockHttpSuccess(httpResponseBody, 200);
+      _mockHttpSuccess(200, responseBody: httpResponseBody);
     });
 
     test('Should call post with correct values', () async {
@@ -71,7 +71,7 @@ void main() {
     });
 
     test('Should return null when post return 200 with no data', () async {
-      _mockHttpSuccess('', 200);
+      _mockHttpSuccess(200);
 
       final result = await sut.request(url, 'POST');
 
@@ -79,7 +79,7 @@ void main() {
     });
 
     test('Should return null when post return 204', () async {
-      _mockHttpSuccess('', 204);
+      _mockHttpSuccess(204);
 
       final result = await sut.request(url, 'POST');
 
@@ -87,15 +87,15 @@ void main() {
     });
 
     test('Should return null when post return 204 with data', () async {
-      _mockHttpSuccess(httpResponseBody, 204);
+      _mockHttpSuccess(204, responseBody: httpResponseBody);
 
       final result = await sut.request(url, 'POST');
 
       expect(result, null);
     });
 
-    test('Should return BadRequestError when post return 400', () async {
-      _mockHttpSuccess('', 400);
+    test('Should throw BadRequestError when post return 400', () async {
+      _mockHttpSuccess(400);
 
       final future = sut.request(url, 'POST');
 
