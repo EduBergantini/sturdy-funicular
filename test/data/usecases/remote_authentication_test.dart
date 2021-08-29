@@ -2,10 +2,10 @@ import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import 'package:moovbr/domain/helpers/helpers.dart';
-import 'package:moovbr/domain/usecases/authentication.dart';
-import 'package:moovbr/data/http/http.dart';
-import 'package:moovbr/data/usecases/remote_authentication.dart';
+import 'package:blog/domain/helpers/helpers.dart';
+import 'package:blog/domain/usecases/authentication.dart';
+import 'package:blog/data/http/http.dart';
+import 'package:blog/data/usecases/remote_authentication.dart';
 
 class MockCustomHttpClient extends Mock implements CustomHttpClient {}
 

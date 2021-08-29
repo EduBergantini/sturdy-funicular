@@ -7,7 +7,7 @@ import '../../http/http.dart';
 class HttpAdapter implements CustomHttpClient {
   final Client httpClient;
   final Map<String, String> customHeaders = {
-    'User-Agent': 'MoovBR.Mobile/1.0.0',
+    'User-Agent': 'blog.Mobile/1.0.0',
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   };
